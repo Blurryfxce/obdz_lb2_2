@@ -25,6 +25,10 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
             entity.Property(e => e.Address).HasMaxLength(200);
             entity.Property(e => e.Phone).HasMaxLength(15);
+            entity.HasMany(e => e.Screens)
+                .WithOne(e => e.Theater)
+                .HasForeignKey(e => e.TheaterId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<Screen>(entity =>

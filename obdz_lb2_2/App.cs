@@ -107,4 +107,71 @@ public class App
 
         context.SaveChanges();
     }
+    
+    ///////////////2_3/////////////
+    
+    public static void AddNewTheater(string name, string address, string phone)
+    {
+        using (var context = new ApplicationDbContext())
+        {
+            var theater = new Theater
+            {
+                Name = name,
+                Address = address,
+                Phone = phone
+            };
+
+            context.Theaters.Add(theater);
+            context.SaveChanges();
+        }
+    }
+    
+    public static void DeleteTheater(int theaterId)
+    {
+        using (var context = new ApplicationDbContext())
+        {
+            var theater = context.Theaters.Find(theaterId);
+            if (theater != null)
+            {
+                context.Theaters.Remove(theater);
+                context.SaveChanges();
+            }
+        }
+    }
+    
+    public static  void DeleteTheaterWithScreens(int theaterId)
+    {
+        using (var context = new ApplicationDbContext())
+        {
+            var theater = context.Theaters.Include(t => t.Screens).FirstOrDefault(t => t.TheaterId == theaterId);
+            if (theater != null)
+            {
+                context.Theaters.Remove(theater);
+                context.SaveChanges();
+
+                Console.WriteLine("Theater and related screens deleted:");
+                foreach (var screen in theater.Screens)
+                {
+                    Console.WriteLine($"Deleted screen: {screen.ScreenId} - {screen.Name}");
+                }
+            }
+        }
+    }
+    
+    public static void UpdateTheater(int theaterId, string newName, string newAddress, string newPhone)
+    {
+        using (var context = new ApplicationDbContext())
+        {
+            var theater = context.Theaters.Find(theaterId);
+            if (theater != null)
+            {
+                theater.Name = newName;
+                theater.Address = newAddress;
+                theater.Phone = newPhone;
+                context.SaveChanges();
+            }
+        }
+    }
+
+
 }
